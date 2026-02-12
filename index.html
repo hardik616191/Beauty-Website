@@ -1,17 +1,17 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beauty Qlub Berlin | Luxury Aesthetic Clinic</title>
+    <title>Kosmetikstudio Beauty Mosaic | Exklusive Kosmetik & Anti-Aging Frankfurt</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-nude: #FAF7F5;
-            --clinic-gold: #C5A059;
+            --clinic-gold: #D4AF37; /* Mosaic Gold */
             --text-black: #1A1A1A;
+            --accent-soft: #E8D3C3;
         }
         html {
             scroll-behavior: smooth;
@@ -23,19 +23,19 @@
             margin: 0;
             overflow-x: hidden;
         }
-        h1, h2, h3, .font-serif {
+        h1, h2, h3, h4, .font-serif {
             font-family: 'Playfair Display', serif;
         }
         .gold-glow {
-            box-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
         }
         .text-gold { color: var(--clinic-gold); }
         .bg-gold { background-color: var(--clinic-gold); }
         .border-gold { border-color: var(--clinic-gold); }
         
         .glass-nav {
-            background: rgba(250, 247, 245, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(250, 247, 245, 0.92);
+            backdrop-filter: blur(15px);
         }
         
         .nav-link {
@@ -57,9 +57,9 @@
         }
 
         @keyframes goldPulse {
-            0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
         .animate-gold-pulse {
             animation: goldPulse 2s infinite;
@@ -88,12 +88,21 @@
             animation: shimmer 0.8s forwards;
         }
 
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal-up.visible {
+        .accordion-item.active .accordion-content {
+            max-height: 300px;
+        }
+
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal-section.visible {
             opacity: 1;
             transform: translateY(0);
         }
