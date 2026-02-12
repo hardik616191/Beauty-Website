@@ -1,0 +1,8 @@
+{
+  "name": "Hardik Zen Spa & Veo Studio",
+  "description": "A luxury 3D-animated spa experience featuring advanced AI video generation. Brand: Hardik Sonagra.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
