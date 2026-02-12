@@ -6,7 +6,6 @@ import { generateVeoVideo, fileToBase64, openApiKeySelector, checkApiKeySelectio
 const VeoSection: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
-  const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>(VideoAspectRatio.LANDSCAPE);
   const [state, setState] = useState<VideoGenerationState>({
     isGenerating: false,
     status: '',
@@ -24,14 +23,14 @@ const VeoSection: React.FC = () => {
         setImage(base64);
         setState(prev => ({ ...prev, error: null }));
       } catch (err) {
-        setState(prev => ({ ...prev, error: "Failed to load image." }));
+        setState(prev => ({ ...prev, error: "Failed to load reference image." }));
       }
     }
   };
 
   const handleGenerate = async () => {
     if (!image) {
-      setState(prev => ({ ...prev, error: "Please upload an image first." }));
+      setState(prev => ({ ...prev, error: "Please upload a treatment reference photo." }));
       return;
     }
 
@@ -40,84 +39,98 @@ const VeoSection: React.FC = () => {
       await openApiKeySelector();
     }
 
-    setState({ isGenerating: true, status: 'Initializing AI...', videoUrl: null, error: null });
+    setState({ isGenerating: true, status: 'Simulating Glow...', videoUrl: null, error: null });
 
     try {
-      const videoUrl = await generateVeoVideo(image, prompt, aspectRatio, (status) => {
+      const videoUrl = await generateVeoVideo(image, prompt, VideoAspectRatio.LANDSCAPE, (status) => {
         setState(prev => ({ ...prev, status }));
       });
-      setState({ isGenerating: false, status: 'Complete', videoUrl, error: null });
+      setState({ isGenerating: false, status: 'Simulation Ready', videoUrl, error: null });
     } catch (err: any) {
       setState({ 
         isGenerating: false, 
         status: '', 
         videoUrl: null, 
-        error: err.message || "Failed to generate AI visual." 
+        error: err.message || "Visualization simulation failed." 
       });
     }
   };
 
   return (
-    <section id="veo-studio" className="py-24 bg-stone-50 px-6 border-y border-stone-100">
+    <section id="veo-studio" className="py-32 bg-stone-50 px-8 border-y border-stone-100">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-serif text-stone-800 mb-2 uppercase tracking-tight"><span className="text-purple-600">AI</span> VIRTUAL STUDIO</h2>
-          <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-stone-400">Bring your beauty vision to life</p>
+        <div className="text-center mb-24 space-y-4">
+          <span className="text-gold font-bold tracking-[0.5em] uppercase text-[9px]">Innovation Room</span>
+          <h2 className="text-6xl font-serif text-stone-900 tracking-tighter">AI Cinematic Preview</h2>
+          <p className="text-stone-400 max-w-lg mx-auto text-sm font-light">Visualize your aesthetic outcome before your session. Our clinic uses neural-rendering to simulate treatment effects.</p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-5 space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-stone-100">
-            <div>
-              <label className="block text-xs font-bold text-stone-400 mb-4 uppercase tracking-[0.2em]">1. Reference Photo</label>
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
+          <div className="lg:col-span-4 space-y-10 bg-white p-10 rounded-[2.5rem] shadow-sm border border-stone-100">
+            <div className="space-y-4">
+              <label className="block text-[10px] font-black text-stone-400 uppercase tracking-widest">1. Reference Profile</label>
               <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full aspect-video border-2 border-dashed border-stone-200 rounded-xl flex flex-col items-center justify-center hover:border-purple-300 transition-all bg-stone-50 overflow-hidden"
+                className="w-full aspect-square border-2 border-dashed border-stone-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-gold transition-all bg-stone-50 overflow-hidden group"
               >
                 {image ? (
-                  <img src={image} alt="Preview" className="h-full w-full object-cover" />
+                  <img src={image} alt="Profile" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="text-center">
-                    <svg className="w-8 h-8 text-stone-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    <span className="text-xs text-stone-400 font-bold uppercase tracking-widest">Select Style</span>
+                  <div className="text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform">
+                       <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <span className="text-[9px] text-stone-400 font-bold uppercase tracking-widest block">Upload Portrait</span>
                   </div>
                 )}
               </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-stone-400 mb-4 uppercase tracking-[0.2em]">2. Vision Details</label>
+            <div className="space-y-4">
+              <label className="block text-[10px] font-black text-stone-400 uppercase tracking-widest">2. Simulation Prompt</label>
               <textarea 
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe your desired glow, soft lighting, hair movement..."
-                className="w-full p-4 rounded-xl border border-stone-100 focus:border-purple-300 outline-none h-32 text-sm bg-stone-50 transition-colors"
+                placeholder="Ex: Hydrated glowing skin, cinematic soft lighting, subtle rejuvenation..."
+                className="w-full p-6 rounded-2xl border border-stone-100 focus:border-gold outline-none h-32 text-xs bg-stone-50 transition-colors resize-none"
               />
             </div>
 
             <button 
               onClick={handleGenerate}
               disabled={state.isGenerating}
-              className={`w-full py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-[10px] text-white transition-all ${state.isGenerating ? 'bg-stone-300' : 'bg-purple-600 hover:bg-purple-700 shadow-lg hover:shadow-purple-200'}`}
+              className={`w-full py-5 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] text-white transition-all ${state.isGenerating ? 'bg-stone-300' : 'bg-gold hover:bg-stone-900 shadow-xl gold-glow'}`}
             >
-              {state.isGenerating ? 'Processing...' : 'Create AI Visualization'}
+              {state.isGenerating ? 'Rendering...' : 'Start Simulation'}
             </button>
 
-            {state.error && <p className="text-xs text-red-500 font-medium text-center">{state.error}</p>}
+            {state.error && <p className="text-[10px] text-red-400 font-bold text-center uppercase tracking-widest">{state.error}</p>}
           </div>
 
-          <div className="lg:col-span-7 bg-stone-900 rounded-2xl overflow-hidden shadow-2xl relative min-h-[500px] flex items-center justify-center border-8 border-white">
+          <div className="lg:col-span-8 bg-stone-900 rounded-[3rem] overflow-hidden shadow-2xl relative min-h-[600px] flex items-center justify-center border-[12px] border-white">
             {state.isGenerating ? (
-              <div className="text-center space-y-6">
-                <div className="w-12 h-12 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                <p className="text-purple-400 text-xs font-bold uppercase tracking-[0.3em]">{state.status}</p>
+              <div className="text-center space-y-8">
+                <div className="relative">
+                   <div className="w-20 h-20 border-2 border-gold/20 border-t-gold rounded-full animate-spin mx-auto"></div>
+                   <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-10 h-10 border-2 border-gold/40 border-b-gold rounded-full animate-spin-slow"></div>
+                   </div>
+                </div>
+                <p className="text-gold text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">{state.status}</p>
               </div>
             ) : state.videoUrl ? (
               <video src={state.videoUrl} controls autoPlay loop className="w-full h-full object-cover" />
             ) : (
-              <div className="text-center max-w-sm px-8">
-                <div className="text-stone-700 mb-6 font-serif text-5xl">VEO</div>
-                <p className="text-stone-500 text-sm font-light italic">Your cinematic style preview will be rendered here. Perfect for planning your next makeover.</p>
+              <div className="text-center max-w-md px-12 space-y-6">
+                <div className="text-gold/20 font-serif text-[120px] leading-none mb-4">AI</div>
+                <h4 className="text-white text-xl font-serif">Simulated Outcome Window</h4>
+                <p className="text-stone-500 text-xs font-light leading-relaxed tracking-wide">
+                  Your treatment visualization will render here. Please note: This simulation is for visual planning and cinematic preview only.
+                </p>
+                <div className="pt-8">
+                  <div className="inline-block px-6 py-2 border border-stone-800 text-stone-700 text-[9px] uppercase tracking-widest rounded-full">Neural Rendering Active</div>
+                </div>
               </div>
             )}
           </div>
